@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Liceo Claudina Urrutia de Lavín - Ingreso</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+<style>
+body {
+  background: linear-gradient(135deg, #003366 0%, #0066cc 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-container {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  padding: 3rem 2rem;
+  width: 100%;
+  max-width: 500px;
+  animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.login-header i {
+  font-size: 3rem;
+  color: #003366;
+  margin-bottom: 1rem;
+}
+
+.login-header h1 {
+  color: #003366;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.login-header p {
+  color: #6c757d;
+  font-size: 0.95rem;
+}
+
+.form-control, .form-select {
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  padding: 12px 15px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  margin-bottom: 1rem;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: #0066cc;
+  box-shadow: 0 0 0 0.2rem rgba(42, 82, 152, 0.25);
+}
+
+.form-control::placeholder, .form-select::placeholder {
+  color: #adb5bd;
+}
+
+.form-label {
+  color: #003366;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.btn-login {
+  background: linear-gradient(135deg, #003366 0%, #0066cc 100%);
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  font-weight: 600;
+  color: white;
+  width: 100%;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+}
+
+.btn-login:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(42, 82, 152, 0.4);
+  color: white;
+}
+
+.alert {
+  border: none;
+  border-radius: 8px;
+  border-left: 4px solid #cc0000;
+  margin-bottom: 1rem;
+}
+
+.rol-badge {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+.rol-admin {
+  background: #cc0000;
+  color: white;
+}
+
+.rol-administrativo {
+  background: #0066cc;
+  color: #003366;
+}
+
+.rol-apoderado {
+  background: #0066cc;
+  color: white;
+}
+
+.role-info {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 1.5rem;
+  border-left: 4px solid #0066cc;
+}
+
+.role-info h6 {
+  color: #003366;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.role-info p {
+  font-size: 0.9rem;
+  color: #6c757d;
+  margin: 0;
+}
+</style>
+</head>
+<body>
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div style="position: absolute; top: 20px; left: 20px; right: 20px; z-index: 1000;">
+{% for message in messages %}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+<i class="bi bi-exclamation-circle"></i> {{ message }}
+<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+<div class="login-container">
+<div class="login-header">
+<div style="text-align: center; margin-bottom: 1rem;">
+<img src="{{ url_for('static', filename='img/logo_liceo.svg') }}" alt="Logo Liceo Claudina Urrutia de Lavín" style="height: 160px; margin-bottom: 1rem; display: block; margin-left: auto; margin-right: auto;">
+</div>
+<i class="bi bi-mortarboard-fill"></i>
+<h1>Liceo Claudina Urrutia de Lavín</h1>
+<p>Sistema de Gestión de Matrículas y Asistencia</p>
+</div>
+
+<form method="POST">
+<input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+<div class="mb-3">
+<label class="form-label"><i class="bi bi-person"></i> Usuario</label>
+<input class="form-control" type="text" name="username" placeholder="Ingresa tu usuario" required autofocus>
+</div>
+
+<div class="mb-3">
+<label class="form-label"><i class="bi bi-lock"></i> Contraseña</label>
+<input class="form-control" type="password" name="password" placeholder="Ingresa tu contraseña" required>
+</div>
+
+<button class="btn-login" type="submit">
+<i class="bi bi-box-arrow-in-right"></i> Ingresar
+</button>
+</form>
+
+<div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #e9ecef;">
+<p style="font-size: 0.85rem; color: #6c757d; margin-bottom: 1rem;"><strong>Credenciales de prueba:</strong></p>
+<div style="font-size: 0.85rem; background: #f8f9fa; padding: 0.75rem; border-radius: 6px; line-height: 1.8;">
+<div><strong>Admin:</strong> usuario: <code>admin</code> | contraseña: <code>admin123</code></div>
+<div style="margin-top: 0.5rem;"><strong>Administrativo:</strong> usuario: <code>administrativo</code> | contraseña: <code>admin123</code></div>
+<div style="margin-top: 0.5rem;"><strong>Docente:</strong> usuario: <code>docente</code> | contraseña: <code>admin123</code></div>
+<div style="margin-top: 0.5rem;"><strong>Apoderado:</strong> usuario: <code>apoderado1</code> | contraseña: <code>admin123</code></div>
+</div>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

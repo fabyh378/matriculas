@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="background: linear-gradient(135deg, #003366 0%, #0066cc 100%); border-radius: 15px; padding: 2rem; margin-bottom: 2rem; color: white; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+    <div style="display: flex; align-items: center; gap: 15px;">
+        <i class="bi bi-file-earmark-arrow-up-fill" style="font-size: 2.5rem;"></i>
+        <div>
+            <h1 style="margin: 0; font-weight: 700; font-size: 2rem;">Importar Matrículas SIGE</h1>
+            <p style="margin: 0; opacity: 0.9; font-size: 1.1rem;">Carga un CSV compatible para crear matrículas automáticamente.</p>
+        </div>
+    </div>
+</div>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div class="alert alert-info alert-dismissible fade show" role="alert" style="border-radius: 10px;">
+    <i class="bi bi-info-circle"></i> {{ messages[0] }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{% endif %}
+{% endwith %}
+
+<div class="card border-0 shadow-lg" style="border-radius: 15px; overflow: hidden;">
+    <div class="card-body p-4">
+        <form action="/import_matriculas_sige" method="POST" enctype="multipart/form-data">
+            <div class="mb-4">
+                <label for="csv_file" class="form-label">Archivo CSV SIGE</label>
+                <input class="form-control" type="file" name="csv_file" id="csv_file" accept=".csv" required>
+            </div>
+            <div class="mb-4">
+                <a href="/download_matriculas_sige_ejemplo" class="btn btn-outline-info btn-sm">
+                    <i class="bi bi-download"></i> Descargar plantilla CSV de ejemplo
+                </a>
+            </div>
+            <div class="mb-4">
+                <p class="text-muted">El archivo debe contener encabezados SIGE con al menos los campos de RUT y Nombre del alumno.</p>
+            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-upload"></i> Importar</button>
+                <a href="/lista" class="btn btn-outline-secondary">Volver a Matrículas</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

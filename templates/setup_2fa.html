@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Configurar Autenticación 2FA{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-lg" style="border-radius: 15px;">
+        <div class="card-header" style="background: linear-gradient(135deg, #0066cc 0%, #7db7ff 100%); color: white; border: none; padding: 2rem; border-radius: 15px 15px 0 0;">
+          <h4 class="mb-0"><i class="bi bi-shield-lock-fill"></i> Configurar Autenticación de Dos Pasos</h4>
+          <p class="mb-0 opacity-75">Esto añade una capa extra de seguridad para tu cuenta.</p>
+        </div>
+        <div class="card-body p-4">
+          <div class="alert alert-info" role="alert">
+            <i class="bi bi-info-circle"></i> Escanea el código en una aplicación autenticadora o ingresa la clave manualmente.
+          </div>
+
+          <div class="mb-4 text-center">
+            <label class="form-label fw-bold">Escanea este código QR</label>
+            <div class="border rounded p-3 d-inline-block" style="background: white;">
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=280x280&data={{ qr_uri }}" alt="QR 2FA" style="max-width: 280px; display: block; margin: 0 auto;">
+            </div>
+            <p class="mt-2 text-muted mb-0">Usa Authy, Google Authenticator o cualquier app compatible de TOTP.</p>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label fw-bold">Clave secreta</label>
+            <input class="form-control" type="text" value="{{ secret }}" readonly style="border-radius: 10px; border: 2px solid #e9ecef; background: #f8f9fa; font-family: monospace; letter-spacing: 0.1em;">
+            <small class="text-muted">Esta clave está agrupada en bloques de 4 caracteres para facilitar su guardado.</small>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label fw-bold">URI de configuración</label>
+            <textarea class="form-control" rows="3" readonly style="border-radius: 10px; border: 2px solid #e9ecef; background: #f8f9fa;">{{ uri }}</textarea>
+          </div>
+
+          <p class="text-muted">Abre tu aplicación autenticadora (Google Authenticator, Authy, etc.) y agrega un nuevo token con la clave anterior o el URI. En el siguiente inicio de sesión se te pedirá el código generado.</p>
+
+          <form method="POST" action="/setup_2fa">
+            <button type="submit" class="btn btn-success" style="border-radius: 12px;">
+              <i class="bi bi-arrow-repeat"></i> Regenerar clave 2FA
+            </button>
+          </form>
+
+          <div class="mt-4 p-3 rounded" style="background: #f8f9fa; border: 1px solid #e9ecef;">
+            <strong>Importante:</strong>
+            <p class="mb-0">Guarda esta clave en un lugar seguro. Si la regenera, deberás configurar de nuevo tu aplicación autenticadora.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

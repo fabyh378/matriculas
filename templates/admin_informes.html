@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 2rem;">
+<i class="bi bi-file-earmark-check" style="font-size: 2rem; color: #003366;"></i>
+<h2 style="margin: 0;">Gestión de Solicitudes de Informes</h2>
+</div>
+
+<div class="row">
+<div class="col-12">
+<div class="card border-0 shadow-lg" style="border-radius: 15px;">
+<div class="card-header" style="background: linear-gradient(135deg, #003366 0%, #0066cc 100%); color: white; border: none; padding: 1.5rem; border-radius: 15px 15px 0 0;">
+<h5 style="margin: 0; font-weight: 600;"><i class="bi bi-list-check"></i> Solicitudes Pendientes de Informes</h5>
+</div>
+<div class="card-body p-4">
+{% if solicitudes %}
+<div class="table-responsive">
+<table class="table table-hover">
+<thead class="table-dark">
+<tr>
+<th><i class="bi bi-person"></i> Apoderado</th>
+<th><i class="bi bi-mortarboard"></i> Alumno</th>
+<th><i class="bi bi-filetype-doc"></i> Tipo de Informe</th>
+<th><i class="bi bi-chat-text"></i> Descripción</th>
+<th><i class="bi bi-calendar"></i> Fecha Solicitud</th>
+<th><i class="bi bi-flag"></i> Estado</th>
+<th><i class="bi bi-gear"></i> Acciones</th>
+</tr>
+</thead>
+<tbody>
+{% for solicitud in solicitudes %}
+<tr>
+<td>{{ solicitud[6] }}</td>
+<td>{{ solicitud[7] or 'N/A' }} ({{ solicitud[1] }})</td>
+<td>
+{% if solicitud[2] == 'certificado_regular' %}
+Certificado de Alumno Regular
+{% elif solicitud[2] == 'informe_notas' %}
+Informe de Notas y Rendimiento
+{% elif solicitud[2] == 'certificado_conducta' %}
+Certificado de Buena Conducta
+{% elif solicitud[2] == 'informe_asistencia' %}
+Informe de Asistencia
+{% else %}
+{{ solicitud[2] }}
+{% endif %}
+</td>
+<td>{{ solicitud[3] }}</td>
+<td>{{ solicitud[5] }}</td>
+<td>
+{% if solicitud[4] == 'pendiente' %}
+<span class="badge bg-warning">Pendiente</span>
+{% elif solicitud[4] == 'aprobado' %}
+<span class="badge bg-success">Aprobado</span>
+{% elif solicitud[4] == 'rechazado' %}
+<span class="badge bg-danger">Rechazado</span>
+{% endif %}
+</td>
+<td>
+{% if solicitud[4] == 'pendiente' %}
+<form method="POST" action="/aprobar_informe/{{ solicitud[0] }}" style="display: inline;">
+<button type="submit" class="btn btn-success btn-sm" onclick="return confirm('¿Aprobar esta solicitud de informe?')">
+<i class="bi bi-check-circle"></i> Aprobar
+</button>
+</form>
+<form method="POST" action="/rechazar_informe/{{ solicitud[0] }}" style="display: inline;">
+<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Rechazar esta solicitud de informe?')">
+<i class="bi bi-x-circle"></i> Rechazar
+</button>
+</form>
+{% else %}
+<span class="text-muted">Procesado</span>
+{% endif %}
+<a href="/chat_informe/{{ solicitud[0] }}" class="btn btn-outline-primary btn-sm" style="border-radius: 8px;">
+<i class="bi bi-chat-dots"></i> Chat
+</a>
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% else %}
+<div class="text-center py-5">
+<i class="bi bi-inbox" style="font-size: 3rem; color: #6c757d;"></i>
+<h4 class="mt-3 text-muted">No hay solicitudes de informes pendientes</h4>
+<p class="text-muted">Las nuevas solicitudes aparecerán aquí cuando los apoderados las envíen.</p>
+</div>
+{% endif %}
+</div>
+</div>
+</div>
+</div>
+
+<style>
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+}
+.card {
+    transition: all 0.3s ease;
+}
+.table th {
+    border-top: none;
+    font-weight: 600;
+}
+.table td {
+    vertical-align: middle;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}Mi Perfil - Docente{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-lg perfil-card" style="border-radius: 15px; position: relative; overflow: hidden;">
+                <div class="card-header" style="background: linear-gradient(135deg, #0066cc 0%, #7db7ff 100%); color: white; border: none; padding: 2rem; border-radius: 15px 15px 0 0;">
+                    <div class="d-flex align-items-center gap-3">
+                        <div style="width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-person-circle" style="font-size: 2rem;"></i>
+                        </div>
+                        <div>
+                            <h4 class="mb-0">{{ session.nombre }}</h4>
+                            <p class="mb-0 opacity-75">Docente - {{ session.get('asignatura', 'Sin asignar') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body p-4">
+                    {% if mensaje %}
+                    <div class="alert alert-{{ 'success' if 'éxito' in mensaje.lower() else 'danger' }} alert-dismissible fade show" role="alert">
+                        {{ mensaje }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    {% endif %}
+
+                    <form method="POST" action="/perfil_docente">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="nombre_completo" class="form-label fw-bold">Nombre Completo</label>
+                                <input type="text" class="form-control" id="nombre_completo" value="{{ session.nombre }}" readonly style="border-radius: 10px; border: 2px solid #e9ecef; background-color: #f8f9fa;">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="usuario" class="form-label fw-bold">Nombre de Usuario</label>
+                                <input type="text" class="form-control" id="usuario" name="usuario" value="{{ session['usuario'] }}" required style="border-radius: 10px; border: 2px solid #e9ecef;">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="asignatura" class="form-label fw-bold">Asignatura</label>
+                                <input type="text" class="form-control" id="asignatura" value="{{ session.get('asignatura', 'Sin asignar') }}" readonly style="border-radius: 10px; border: 2px solid #e9ecef; background-color: #f8f9fa;">
+                                <small class="text-muted">La asignatura no puede ser modificada</small>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="password_actual" class="form-label fw-bold">Contraseña Actual</label>
+                                <input type="password" class="form-control" id="password_actual" name="password_actual" style="border-radius: 10px; border: 2px solid #e9ecef;">
+                                <small class="text-muted">Deja vacío si no deseas cambiar la contraseña</small>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="password_nueva" class="form-label fw-bold">Nueva Contraseña</label>
+                                <input type="password" class="form-control" id="password_nueva" name="password_nueva" style="border-radius: 10px; border: 2px solid #e9ecef;">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="password_confirmar" class="form-label fw-bold">Confirmar Nueva Contraseña</label>
+                                <input type="password" class="form-control" id="password_confirmar" name="password_confirmar" style="border-radius: 10px; border: 2px solid #e9ecef;">
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-3 mt-4">
+                            <button type="submit" class="btn btn-primary px-4 py-2" style="border-radius: 10px; background: linear-gradient(135deg, #0066cc 0%, #7db7ff 100%); border: none;">
+                                <i class="bi bi-check-circle"></i> Guardar Cambios
+                            </button>
+                            <a href="/dashboard_docente" class="btn btn-secondary px-4 py-2" style="border-radius: 10px;">
+                                <i class="bi bi-arrow-left"></i> Volver al Dashboard
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #0066cc;
+    box-shadow: 0 0 0 0.2rem rgba(79, 172, 254, 0.25);
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+}
+
+.perfil-card::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 80%;
+    height: 80%;
+    background-image: url('{{ url_for('static', filename='img/logo_liceo.svg') }}');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0.08;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+.perfil-card .card-body {
+    position: relative;
+    z-index: 1;
+}
+</style>
+{% endblock %}

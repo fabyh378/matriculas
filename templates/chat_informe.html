@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 2rem;">
+<i class="bi bi-chat-dots" style="font-size: 2rem; color: #003366;"></i>
+<h2 style="margin: 0;">Chat de Consulta sobre Informe</h2>
+</div>
+
+<div class="row">
+<div class="col-md-8 mx-auto">
+<div class="card border-0 shadow-lg" style="border-radius: 15px;">
+<div class="card-header" style="background: linear-gradient(135deg, #003366 0%, #0066cc 100%); color: white; border: none; padding: 1.5rem; border-radius: 15px 15px 0 0;">
+<h5 style="margin: 0; font-weight: 600;"><i class="bi bi-chat-quote"></i> Canal de Comunicación</h5>
+</div>
+<div class="card-body p-4">
+<div id="chat-messages" style="height: 400px; overflow-y: auto; border: 1px solid #e9ecef; border-radius: 10px; padding: 1rem; margin-bottom: 1rem; background: #f8f9fa;">
+{% for mensaje in mensajes %}
+<div class="message mb-3" style="display: flex; {% if mensaje[4] == session.user_id %}justify-content: flex-end;{% endif %}">
+<div style="max-width: 70%; padding: 0.75rem 1rem; border-radius: 15px; {% if mensaje[4] == session.user_id %}background: #0066cc; color: white;{% else %}background: white; border: 1px solid #e9ecef;{% endif %}">
+<strong>{{ mensaje[2] }} <span class="badge {% if mensaje[3] == 'admin' or mensaje[3] == 'administrativo' %}bg-danger{% else %}bg-secondary{% endif %}" style="font-size: 0.7rem;">{{ mensaje[3] | capitalize }}</span></strong><br>
+{{ mensaje[0] }}<br>
+<small style="opacity: 0.7;">{{ mensaje[1] }}</small>
+</div>
+</div>
+{% else %}
+<div class="text-center py-5 text-muted">
+<i class="bi bi-chat-left" style="font-size: 2.5rem;"></i>
+<p class="mt-2 mb-0">No hay mensajes en este chat. Escribe un mensaje para iniciar la conversación.</p>
+</div>
+{% endfor %}
+</div>
+
+<form method="POST" id="chat-form">
+<input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+<div class="input-group">
+<textarea class="form-control" name="mensaje" rows="2" placeholder="Escribe tu mensaje..." required style="border-radius: 10px 0 0 10px; resize: none;"></textarea>
+<button class="btn btn-primary" type="submit" style="border-radius: 0 10px 10px 0; background: linear-gradient(135deg, #003366 0%, #0066cc 100%); border: none;">
+<i class="bi bi-send"></i> Enviar
+</button>
+</div>
+</form>
+
+<div class="mt-3 text-center">
+{% if rol == 'apoderado' %}
+<a href="/dashboard" class="btn btn-outline-secondary" style="border-radius: 10px;">
+<i class="bi bi-arrow-left"></i> Volver al Dashboard
+</a>
+{% elif rol == 'admin' %}
+<a href="/admin/informes" class="btn btn-outline-secondary" style="border-radius: 10px;">
+<i class="bi bi-arrow-left"></i> Volver a Solicitudes
+</a>
+{% else %}
+<a href="/administrativo/informes" class="btn btn-outline-secondary" style="border-radius: 10px;">
+<i class="bi bi-arrow-left"></i> Volver a Solicitudes
+</a>
+{% endif %}
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<script>
+document.getElementById('chat-form').addEventListener('submit', function(e) {
+    setTimeout(function() {
+        location.reload();
+    }, 500);
+});
+
+var chatMessages = document.getElementById('chat-messages');
+chatMessages.scrollTop = chatMessages.scrollHeight;
+
+setInterval(function() {
+    location.reload();
+}, 10000);
+</script>
+
+<style>
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1) !important;
+    transition: all 0.3s ease;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="background: linear-gradient(135deg, #003366 0%, #0066cc 100%); border-radius: 15px; padding: 2rem; margin-bottom: 2rem; color: white; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+<div style="display: flex; align-items: center; gap: 15px;">
+<i class="bi bi-person-plus-fill" style="font-size: 2.5rem;"></i>
+<div>
+<h1 style="margin: 0; font-weight: 700; font-size: 2rem;">Crear Nuevo Usuario</h1>
+<p style="margin: 0; opacity: 0.9; font-size: 1.1rem;">Registra un nuevo usuario en el sistema</p>
+</div>
+</div>
+</div>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert" style="border: none; border-left: 4px solid #0066cc; border-radius: 10px;">
+<i class="bi bi-check-circle-fill"></i> <strong>¡Éxito!</strong> {{ messages[0] }}
+<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{% endif %}
+{% endwith %}
+
+<form method="POST" action="/crear_usuario" id="usuarioForm">
+<div class="row justify-content-center">
+<div class="col-lg-8">
+<div class="card border-0 shadow-lg" style="border-radius: 15px; overflow: hidden;">
+<div class="card-header" style="background: linear-gradient(135deg, #003366 0%, #0066cc 100%); color: white; border: none; padding: 1.5rem;">
+<div style="display: flex; align-items: center; gap: 10px;">
+<i class="bi bi-person-badge-fill" style="font-size: 1.5rem;"></i>
+<h5 style="margin: 0; font-weight: 600;">Datos del Usuario</h5>
+</div>
+</div>
+<div class="card-body p-4">
+<div class="row g-3">
+<div class="col-md-6">
+<div class="form-floating">
+<input class="form-control form-control-lg" style="border-radius: 10px; border: 2px solid #e9ecef;" type="text" name="username" placeholder="Nombre de usuario" id="username" required>
+<label for="username"><i class="bi bi-person"></i> Nombre de Usuario</label>
+</div>
+</div>
+<div class="col-md-6">
+<div class="form-floating">
+<input class="form-control form-control-lg" style="border-radius: 10px; border: 2px solid #e9ecef;" type="password" name="password" placeholder="Contraseña" id="password" required>
+<label for="password"><i class="bi bi-lock"></i> Contraseña</label>
+</div>
+</div>
+<div class="col-12">
+<div class="form-floating">
+<input class="form-control form-control-lg" style="border-radius: 10px; border: 2px solid #e9ecef;" type="text" name="nombre_completo" placeholder="Nombre completo" id="nombre_completo" required>
+<label for="nombre_completo"><i class="bi bi-person-check"></i> Nombre Completo</label>
+</div>
+</div>
+<div class="col-md-6">
+<div class="form-floating">
+<select class="form-select form-select-lg" style="border-radius: 10px; border: 2px solid #e9ecef;" name="rol" id="rol" required onchange="toggleAsignatura()">
+<option value="">Seleccionar rol</option>
+<option value="admin">Administrador</option>
+<option value="administrativo">Personal Administrativo</option>
+<option value="docente">Docente</option>
+<option value="apoderado">Apoderado</option>
+</select>
+<label for="rol"><i class="bi bi-shield"></i> Rol</label>
+</div>
+</div>
+<div class="col-md-6" id="asignaturaDiv" style="display: none;">
+<div class="form-floating">
+<select class="form-select form-select-lg" style="border-radius: 10px; border: 2px solid #e9ecef;" name="asignatura" id="asignatura">
+<option value="">Seleccionar asignatura</option>
+<option value="Lenguaje">Lenguaje</option>
+<option value="Historia">Historia</option>
+<option value="Matematica">Matemática</option>
+<option value="Educacion Fisica">Educación Física</option>
+<option value="Arte">Arte</option>
+<option value="Ingles">Inglés</option>
+<option value="Musica">Música</option>
+<option value="Ciencias Naturales">Ciencias Naturales</option>
+<option value="Quimica">Química</option>
+</select>
+<label for="asignatura"><i class="bi bi-book"></i> Asignatura</label>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Action Buttons -->
+<div class="row mt-4">
+<div class="col-12 text-center">
+<div class="d-flex justify-content-center gap-3">
+<a href="/dashboard" class="btn btn-outline-secondary btn-lg px-4">
+<i class="bi bi-arrow-left"></i> Volver al Dashboard
+</a>
+<button type="submit" class="btn btn-success btn-lg px-5" style="border-radius: 12px; font-weight: 600; box-shadow: 0 4px 15px rgba(25, 135, 84, 0.3);">
+<i class="bi bi-person-plus"></i> Crear Usuario
+</button>
+</div>
+</div>
+</div>
+</form>
+
+<style>
+.form-floating > label {
+    padding: 1rem 0.75rem;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #003366;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1) !important;
+}
+
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+</style>
+
+<script>
+function toggleAsignatura() {
+    const rol = document.getElementById('rol').value;
+    const asignaturaDiv = document.getElementById('asignaturaDiv');
+    const asignatura = document.getElementById('asignatura');
+
+    if (rol === 'docente') {
+        asignaturaDiv.style.display = 'block';
+        asignatura.required = true;
+    } else {
+        asignaturaDiv.style.display = 'none';
+        asignatura.required = false;
+        asignatura.value = '';
+    }
+}
+</script>
+{% endblock %}

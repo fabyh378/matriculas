@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 2rem;">
+<i class="bi bi-printer" style="font-size: 2rem; color: #003366;"></i>
+<h2 style="margin: 0;">Informes Aprobados para Imprimir</h2>
+</div>
+
+<div class="row">
+<div class="col-12">
+<div class="card border-0 shadow-lg" style="border-radius: 15px;">
+<div class="card-header" style="background: linear-gradient(135deg, #003366 0%, #0066cc 100%); color: white; border: none; padding: 1.5rem; border-radius: 15px 15px 0 0;">
+<h5 style="margin: 0; font-weight: 600;"><i class="bi bi-file-earmark-check"></i> Informes Pendientes de Impresión</h5>
+</div>
+<div class="card-body p-4">
+{% if informes %}
+<div class="table-responsive">
+<table class="table table-hover">
+<thead class="table-dark">
+<tr>
+<th><i class="bi bi-person"></i> Apoderado</th>
+<th><i class="bi bi-mortarboard"></i> Alumno</th>
+<th><i class="bi bi-filetype-doc"></i> Tipo de Informe</th>
+<th><i class="bi bi-chat-text"></i> Descripción</th>
+<th><i class="bi bi-calendar"></i> Fecha Solicitud</th>
+<th><i class="bi bi-gear"></i> Acciones</th>
+</tr>
+</thead>
+<tbody>
+{% for informe in informes %}
+<tr>
+<td>{{ informe[6] }}</td>
+<td>{{ informe[7] or 'N/A' }} ({{ informe[1] }})</td>
+<td>
+{% if informe[2] == 'certificado_regular' %}
+Certificado de Alumno Regular
+{% elif informe[2] == 'informe_notas' %}
+Informe de Notas y Rendimiento
+{% elif informe[2] == 'certificado_conducta' %}
+Certificado de Buena Conducta
+{% elif informe[2] == 'informe_asistencia' %}
+Informe de Asistencia
+{% else %}
+{{ informe[2] }}
+{% endif %}
+</td>
+<td>{{ informe[3] }}</td>
+<td>{{ informe[5] }}</td>
+<td>
+<button class="btn btn-primary btn-sm" onclick="imprimirInforme({{ informe[0] }})">
+<i class="bi bi-printer"></i> Imprimir
+</button>
+<button class="btn btn-success btn-sm" onclick="marcarEntregado({{ informe[0] }})">
+<i class="bi bi-check-circle"></i> Marcar Entregado
+</button>
+<a href="/chat_informe/{{ informe[0] }}" class="btn btn-outline-primary btn-sm" style="border-radius: 8px;">
+<i class="bi bi-chat-dots"></i> Chat
+</a>
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% else %}
+<div class="text-center py-5">
+<i class="bi bi-check-circle" style="font-size: 3rem; color: #6c757d;"></i>
+<h4 class="mt-3 text-muted">No hay informes pendientes de impresión</h4>
+<p class="text-muted">Los informes aprobados aparecerán aquí para su procesamiento.</p>
+</div>
+{% endif %}
+</div>
+</div>
+</div>
+</div>
+
+<script>
+function imprimirInforme(informeId) {
+    // Aquí se podría abrir una ventana de impresión o generar un PDF
+    alert('Funcionalidad de impresión en desarrollo. Informe ID: ' + informeId);
+    // Por ahora, solo marcamos como impreso
+    window.open('/generar_informe/' + informeId, '_blank');
+}
+
+function marcarEntregado(informeId) {
+    if (confirm('¿Marcar este informe como entregado?')) {
+        // En una implementación real, esto haría una petición AJAX
+        alert('Informe marcado como entregado. ID: ' + informeId);
+        location.reload();
+    }
+}
+</script>
+
+<style>
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+}
+.card {
+    transition: all 0.3s ease;
+}
+.table th {
+    border-top: none;
+    font-weight: 600;
+}
+.table td {
+    vertical-align: middle;
+}
+</style>
+{% endblock %}

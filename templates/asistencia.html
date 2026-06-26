@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 2rem;">
+<i class="bi bi-calendar-check" style="font-size: 2rem; color: #003366;"></i>
+<h2 style="margin: 0;">Registro de Asistencia</h2>
+</div>
+
+<form method="POST" action="/asistencia">
+<div class="row mb-4">
+<div class="col-md-6">
+<label class="form-label"><i class="bi bi-calendar-event"></i> Seleccionar Fecha</label>
+<input class="form-control form-control-lg" type="date" name="fecha" id="fecha" required>
+</div>
+<div class="col-md-6">
+<label class="form-label">&nbsp;</label>
+<button type="button" class="btn btn-secondary w-100 btn-lg" onclick="cargarAsistenciaFecha()">
+<i class="bi bi-arrow-repeat"></i> Cargar registros de esta fecha
+</button>
+</div>
+</div>
+
+<div class="table-responsive">
+<table class="table table-hover">
+<thead>
+<tr>
+<th style="width: 5%"><i class="bi bi-check-square"></i></th>
+<th><i class="bi bi-person"></i> Alumno</th>
+<th><i class="bi bi-card-text"></i> RUT</th>
+</tr>
+</thead>
+<tbody>
+{% if alumnos %}
+{% for alumno in alumnos %}
+<tr>
+<td>
+<div class="form-check">
+<input class="form-check-input" type="checkbox" name="presente_{{ alumno[0] }}_{{ alumno[1] }}" id="presente_{{ loop.index }}">
+</div>
+</td>
+<td><label for="presente_{{ loop.index }}" style="cursor: pointer;"><strong>{{ alumno[0] }}</strong></label></td>
+<td><label for="presente_{{ loop.index }}" style="cursor: pointer;">{{ alumno[1] }}</label></td>
+</tr>
+{% endfor %}
+{% else %}
+<tr>
+<td colspan="3" class="text-center text-muted py-4">
+<i class="bi bi-exclamation-circle"></i> No hay alumnos matriculados
+</td>
+</tr>
+{% endif %}
+</tbody>
+</table>
+</div>
+
+<div class="row mt-4">
+<div class="col-auto">
+<button class="btn btn-primary btn-lg" type="submit">
+<i class="bi bi-check-circle"></i> Guardar Asistencia del Día
+</button>
+</div>
+<div class="col-auto">
+<button class="btn btn-outline-secondary btn-lg" type="button" onclick="marcarTodos()">
+<i class="bi bi-check-all"></i> Marcar Todos
+</button>
+</div>
+<div class="col-auto">
+<button class="btn btn-outline-secondary btn-lg" type="button" onclick="desmarcarTodos()">
+<i class="bi bi-x-lg"></i> Desmarcar Todos
+</button>
+</div>
+</form>
+</div>
+
+<script>
+// Establecer fecha de hoy por defecto
+document.addEventListener('DOMContentLoaded', function() {
+    const hoy = new Date().toISOString().split('T')[0];
+    document.getElementById('fecha').value = hoy;
+});
+
+function marcarTodos() {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"][name^="presente_"]');
+    checkboxes.forEach(cb => cb.checked = true);
+}
+
+function desmarcarTodos() {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"][name^="presente_"]');
+    checkboxes.forEach(cb => cb.checked = false);
+}
+
+function cargarAsistenciaFecha() {
+    const fecha = document.getElementById('fecha').value;
+    if (!fecha) {
+        alert('Por favor selecciona una fecha');
+        return;
+    }
+    // Aquí podrías hacer una petición AJAX para cargar automáticamente los registros de esa fecha
+    alert('Función disponible: Carga registros de ' + fecha);
+}
+</script>
+{% endblock %}

@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="watermark-page">
+<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 3rem;">
+<i class="bi bi-person-check" style="font-size: 2.5rem; color: #003366;"></i>
+<div>
+<h2 style="margin: 0;">Mi Información de Asistencia</h2>
+<p style="color: #6c757d; margin: 0;">Bienvenido, {{ session.nombre }}</p>
+</div>
+</div>
+
+{% if alumnos %}
+<div class="row mb-4">
+{% for alumno_nombre, alumno_rut in alumnos %}
+<div class="col-md-6 mb-3">
+<div class="card border-0 shadow-sm h-100" style="border-left: 5px solid #0066cc;">
+<div class="card-body">
+<h5 class="card-title" style="color: #003366;">{{ alumno_nombre }}</h5>
+<p style="color: #6c757d; margin-bottom: 1.5rem;">RUT: {{ alumno_rut }}</p>
+
+{% if asistencias.get(alumno_nombre) %}
+{% set stat = asistencias[alumno_nombre] %}
+<div class="row text-center mb-3">
+<div class="col-6">
+<div style="font-size: 1.8rem; color: #0066cc; font-weight: bold;">{{ stat.presentes }}</div>
+<small class="text-success">Presentes</small>
+</div>
+<div class="col-6">
+<div style="font-size: 1.8rem; color: #cc0000; font-weight: bold;">{{ stat.ausentes }}</div>
+<small class="text-danger">Ausentes</small>
+</div>
+</div>
+
+<div class="progress mb-3" style="height: 20px;">
+<div class="progress-bar bg-success" style="width: {{ stat.porcentaje }}%; font-size: 0.85rem; line-height: 20px;">
+{{ stat.porcentaje }}%
+</div>
+</div>
+
+<p style="color: #6c757d; font-size: 0.9rem;">
+<strong>Asistencia Total:</strong> {{ stat.presentes }} de {{ stat.total }} registros
+</p>
+{% else %}
+<div class="alert alert-info mb-0">
+<i class="bi bi-info-circle"></i> No hay registros de asistencia aún
+</div>
+{% endif %}
+</div>
+</div>
+</div>
+{% endfor %}
+</div>
+
+<!-- Ver detalle de asistencia -->
+<div class="card border-0 shadow-sm">
+<div class="card-header" style="background: linear-gradient(135deg, #003366 0%, #0066cc 100%); color: white; border: none;">
+<h5 style="margin: 0;"><i class="bi bi-list-check"></i> Historial Detallado</h5>
+</div>
+<div class="card-body p-0">
+<div class="list-group list-group-flush">
+<a href="/lista_asistencia" class="list-group-item list-group-item-action d-flex align-items-center justify-content-between p-3">
+<span><i class="bi bi-file-earmark-text"></i> Ver historial completo de asistencia</span>
+<i class="bi bi-chevron-right"></i>
+</a>
+<a href="/calificaciones" class="list-group-item list-group-item-action d-flex align-items-center justify-content-between p-3">
+<span><i class="bi bi-star"></i> Ver calificaciones de mis hijos</span>
+<i class="bi bi-chevron-right"></i>
+</a>
+<a href="/horarios" class="list-group-item list-group-item-action d-flex align-items-center justify-content-between p-3">
+<span><i class="bi bi-clock"></i> Ver horarios de clases</span>
+<i class="bi bi-chevron-right"></i>
+</a>
+</div>
+</div>
+</div>
+
+<!-- Mis Solicitudes de Informes -->
+<div class="card border-0 shadow-sm mt-4">
+<div class="card-header" style="background: linear-gradient(135deg, #003366 0%, #0066cc 100%); color: white; border: none;">
+<h5 style="margin: 0;"><i class="bi bi-file-earmark-check"></i> Mis Solicitudes de Informes</h5>
+</div>
+<div class="card-body p-4">
+{% if solicitudes %}
+<div class="table-responsive">
+<table class="table table-hover align-middle">
+<thead>
+<tr>
+<th>Alumno</th>
+<th>Tipo de Informe</th>
+<th>Fecha</th>
+<th>Estado</th>
+<th>Acción</th>
+</tr>
+</thead>
+<tbody>
+{% for sol in solicitudes %}
+<tr>
+<td>{{ sol[1] }}</td>
+<td>
+{% if sol[2] == 'certificado_regular' %}
+Certificado de Alumno Regular
+{% elif sol[2] == 'informe_notas' %}
+Informe de Notas y Rendimiento
+{% elif sol[2] == 'certificado_conducta' %}
+Certificado de Buena Conducta
+{% elif sol[2] == 'informe_asistencia' %}
+Informe de Asistencia
+{% else %}
+{{ sol[2] }}
+{% endif %}
+</td>
+<td>{{ sol[4] }}</td>
+<td>
+{% if sol[3] == 'pendiente' %}
+<span class="badge bg-warning">Pendiente</span>
+{% elif sol[3] == 'aprobado' %}
+<span class="badge bg-success">Aprobado</span>
+{% else %}
+<span class="badge bg-danger">Rechazado</span>
+{% endif %}
+</td>
+<td>
+<a href="/chat_informe/{{ sol[0] }}" class="btn btn-outline-primary btn-sm" style="border-radius: 8px;">
+<i class="bi bi-chat-dots"></i> Chat
+</a>
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% else %}
+<div class="text-center py-4 text-muted">
+<i class="bi bi-inbox" style="font-size: 2rem;"></i>
+<p class="mt-2 mb-0">No has realizado ninguna solicitud de informe aún.</p>
+</div>
+{% endif %}
+</div>
+</div>
+
+{% else %}
+<div class="alert alert-warning" role="alert">
+<i class="bi bi-exclamation-triangle"></i> No hay alumnos asociados a tu cuenta. Por favor contacta con el establecimiento.
+</div>
+{% endif %}
+
+<div class="row mt-4">
+<div class="col-12">
+<div class="card border-0 shadow-sm">
+<div class="card-header" style="background: linear-gradient(135deg, #003366 0%, #0066cc 100%); color: white; border: none;">
+<h5 style="margin: 0;"><i class="bi bi-shield-check"></i> Información de mi Rol</h5>
+</div>
+<div class="card-body">
+<p><strong>Tipo de Usuario:</strong> <span class="badge bg-success">Apoderado</span></p>
+<p style="margin-bottom: 0; color: #6c757d;">Tienes acceso limitado únicamente a la información de asistencia de tu estudiante. No puedes modificar registros ni acceder a información de otros estudiantes.</p>
+</div>
+</div>
+</div>
+<style>
+.watermark-page {
+    position: relative;
+    overflow: hidden;
+}
+.watermark-page::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 70%;
+    height: 70%;
+    background: url('{{ url_for('static', filename='img/logo_liceo.svg') }}') center/contain no-repeat;
+    opacity: 0.05;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 0;
+}
+.watermark-page > * {
+    position: relative;
+    z-index: 1;
+}
+</style>
+
+<!-- Acciones Rápidas -->
+<div class="row mt-4">
+<div class="col-12">
+<div class="card border-0 shadow-lg" style="border-radius: 15px;">
+<div class="card-header" style="background: linear-gradient(135deg, #003366 0%, #0066cc 100%); color: white; border: none; padding: 1.5rem; border-radius: 15px 15px 0 0;">
+<h5 style="margin: 0; font-weight: 600;"><i class="bi bi-lightning"></i> Acciones Rápidas</h5>
+</div>
+<div class="card-body p-4">
+<div class="row g-3">
+<div class="col-md-6">
+<a href="/lista_asistencia" class="btn btn-info btn-lg w-100 d-flex flex-column align-items-center gap-2 py-4" style="border-radius: 10px; text-decoration: none; color: white;">
+<i class="bi bi-list-check" style="font-size: 2rem;"></i>
+<span style="font-weight: 600;">Ver Detalles de Asistencia</span>
+</a>
+</div>
+<div class="col-md-6">
+<a href="/solicitar_informe" class="btn btn-success btn-lg w-100 d-flex flex-column align-items-center gap-2 py-4" style="border-radius: 10px; text-decoration: none; color: white;">
+<i class="bi bi-file-earmark-text" style="font-size: 2rem;"></i>
+<span style="font-weight: 600;">Solicitar Informe</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 2rem;">
+<i class="bi bi-list-check" style="font-size: 2rem; color: #003366;"></i>
+<h2 style="margin: 0;">Historial de Asistencia</h2>
+</div>
+
+<!-- Filtros -->
+<div class="card mb-4" style="border: none; background: #f8f9fa;">
+<div class="card-body">
+<div class="row g-3">
+<!-- Solo mostrar filtros de alumno si no es apoderado -->
+{% if session.get('rol') != 'apoderado' %}
+<div class="col-md-6">
+<form method="GET" action="/lista_asistencia" class="row g-2">
+<div class="col">
+<label class="form-label"><i class="bi bi-calendar"></i> Filtrar por Fecha</label>
+<input class="form-control" type="date" name="fecha" value="{{ request.args.get('fecha', '') }}">
+</div>
+<div class="col d-flex align-items-end">
+<button class="btn btn-outline-primary" type="submit">
+<i class="bi bi-search"></i> Filtrar
+</button>
+</div>
+</form>
+</div>
+<div class="col-md-6">
+<form method="GET" action="/lista_asistencia" class="row g-2">
+<div class="col">
+<label class="form-label"><i class="bi bi-person"></i> Filtrar por Alumno</label>
+<input class="form-control" type="text" name="alumno" placeholder="Nombre del alumno" value="{{ request.args.get('alumno', '') }}">
+</div>
+<div class="col d-flex align-items-end">
+<button class="btn btn-outline-primary" type="submit">
+<i class="bi bi-search"></i> Buscar
+</button>
+</div>
+</form>
+</div>
+{% else %}
+<!-- Apoderado solo puede filtrar por fecha -->
+<div class="col-12">
+<form method="GET" action="/lista_asistencia" class="row g-2">
+<div class="col-md-6">
+<label class="form-label"><i class="bi bi-calendar"></i> Filtrar por Fecha</label>
+<input class="form-control" type="date" name="fecha" value="{{ request.args.get('fecha', '') }}">
+</div>
+<div class="col-md-6 d-flex align-items-end">
+<button class="btn btn-outline-primary w-100" type="submit">
+<i class="bi bi-search"></i> Filtrar
+</button>
+</div>
+</form>
+</div>
+{% endif %}
+</div>
+<div class="text-center mt-3 d-flex justify-content-center gap-2 flex-wrap">
+<a href="/lista_asistencia" class="btn btn-sm btn-secondary">
+<i class="bi bi-x-circle"></i> Limpiar Filtros
+</a>
+{% if session.get('rol') in ['admin', 'administrativo', 'docente'] %}
+<a href="/descargar_asistencia_excel" class="btn btn-sm btn-primary">
+<i class="bi bi-download"></i> Descargar CSV
+</a>
+{% endif %}
+</div>
+</div>
+</div>
+
+<!-- Estadísticas por Alumno -->
+{% if stats %}
+<div class="card mb-4" style="border: none; border-top: 4px solid #003366;">
+<div class="card-header" style="background: #f8f9fa; border: none;">
+<h5 style="margin: 0; color: #003366;">
+<i class="bi bi-graph-up"></i> Estadísticas de Asistencia
+</h5>
+</div>
+<div class="card-body">
+<div class="row">
+{% for alumno_nombre, stat in stats.items() %}
+<div class="col-md-6 col-lg-4 mb-3">
+<div class="card h-100" style="border-left: 4px solid #0066cc;">
+<div class="card-body">
+<h6 class="card-title" style="color: #003366;">{{ alumno_nombre }}</h6>
+<div class="row text-center">
+<div class="col-6">
+<div style="font-size: 1.5rem; color: #0066cc; font-weight: bold;">{{ stat.presentes }}</div>
+<small class="text-success">Presentes</small>
+</div>
+<div class="col-6">
+<div style="font-size: 1.5rem; color: #cc0000; font-weight: bold;">{{ stat.ausentes }}</div>
+<small class="text-danger">Ausentes</small>
+</div>
+</div>
+<div class="mt-3">
+<div class="progress" style="height: 10px;">
+<div class="progress-bar bg-success" style="width: {{ stat.porcentaje }}%"></div>
+</div>
+<small class="text-muted">{{ stat.porcentaje }}% Asistencia ({{ stat.total }} registros)</small>
+</div>
+</div>
+</div>
+</div>
+{% endfor %}
+</div>
+</div>
+</div>
+{% endif %}
+
+<!-- Tabla de Registros -->
+<div class="card" style="border: none; border-top: 4px solid #003366;">
+<div class="card-header" style="background: #f8f9fa; border: none;">
+<h5 style="margin: 0; color: #003366;">
+<i class="bi bi-table"></i> Detalle de Registros
+</h5>
+</div>
+<div class="card-body p-0">
+{% if registros %}
+<div class="table-responsive">
+<table class="table table-hover mb-0">
+<thead>
+<tr>
+<th><i class="bi bi-calendar-event"></i> Fecha</th>
+<th><i class="bi bi-person"></i> Alumno</th>
+<th><i class="bi bi-card-text"></i> RUT</th>
+<th><i class="bi bi-check-square"></i> Estado</th>
+{% if session.get('rol') != 'apoderado' %}<th style="width: 80px; text-align: center;"><i class="bi bi-tools"></i> Acciones</th>{% endif %}
+</tr>
+</thead>
+<tbody>
+{% for registro in registros %}
+<tr>
+<td>
+<span style="display: inline-flex; align-items: center; gap: 5px;">
+<i class="bi bi-calendar3"></i> {{ registro[3] }}
+</span>
+</td>
+<td><strong>{{ registro[1] }}</strong></td>
+<td>{{ registro[2] }}</td>
+<td>
+{% if registro[4] == 1 %}
+<span class="badge bg-success" style="padding: 8px 15px;">
+<i class="bi bi-check-circle"></i> Presente
+</span>
+{% else %}
+<span class="badge bg-danger" style="padding: 8px 15px;">
+<i class="bi bi-x-circle"></i> Ausente
+</span>
+{% endif %}
+</td>
+{% if session.get('rol') != 'apoderado' %}<td style="text-align: center;">
+<a href="/eliminar_asistencia/{{ registro[0] }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Eliminar este registro?')">
+<i class="bi bi-trash"></i>
+</a>
+</td>{% endif %}
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% else %}
+<div class="text-center py-5">
+<i class="bi bi-inbox" style="font-size: 2.5rem; color: #ccc;"></i>
+<p class="text-muted mt-3">No hay registros de asistencia</p>
+</div>
+{% endif %}
+</div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Autenticación de Dos Pasos{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-6">
+      <div class="card border-0 shadow-lg" style="border-radius: 15px;">
+        <div class="card-header" style="background: linear-gradient(135deg, #003366 0%, #0066cc 100%); color: white; border: none; padding: 2rem; border-radius: 15px 15px 0 0;">
+          <h4 class="mb-0"><i class="bi bi-shield-lock"></i> Verificación en Dos Pasos</h4>
+          <p class="mb-0 opacity-75">Ingresa el código que genera tu aplicación de autenticación.</p>
+        </div>
+        <div class="card-body p-4">
+          <form method="POST" action="/twofa">
+            <div class="mb-4">
+              <label for="token" class="form-label fw-bold">Código de autenticación</label>
+              <input type="text" class="form-control" id="token" name="token" placeholder="000000" required autofocus style="border-radius: 10px; border: 2px solid #e9ecef;">
+            </div>
+            <button type="submit" class="btn btn-primary w-100" style="border-radius: 12px; background: linear-gradient(135deg, #003366 0%, #0066cc 100%);">
+              <i class="bi bi-check-circle"></i> Verificar Código
+            </button>
+          </form>
+          <div class="mt-4 p-3 rounded" style="background: #f8f9fa; border: 1px solid #e9ecef;">
+            <h6 style="font-weight: 600;">¿No tienes código?</h6>
+            <p class="mb-0 text-muted">Si no has configurado aun tu autenticación, inicia sesión normalmente y luego visita la opción <strong>2FA</strong> en el menú para generar tu clave.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

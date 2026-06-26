@@ -1,0 +1,444 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="background: linear-gradient(135deg, #003366 0%, #0066cc 100%); border-radius: 15px; padding: 2rem; margin-bottom: 2rem; color: white; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+<div style="display: flex; align-items: center; gap: 15px;">
+<i class="bi bi-pencil-square-fill" style="font-size: 2.5rem;"></i>
+<div>
+<h1 style="margin: 0; font-weight: 700; font-size: 2rem;">Nueva Matrícula</h1>
+<p style="margin: 0; opacity: 0.9; font-size: 1.1rem;">Registra los datos del estudiante y su apoderado según requisitos SIGE.</p>
+</div>
+</div>
+<div style="margin-top: 1rem; font-size: 0.95rem; opacity: 0.95; line-height: 1.5;">
+<ul style="margin: 0; padding-left: 1.2rem;">
+<li>Solo se solicitan datos de identidad, contacto, residencia y situación académica.</li>
+<li>No se piden antecedentes socioeconómicos, certificados de conducta ni pago inmediato.</li>
+<li>Para matrícula nueva, es obligatorio tener la asignación SAE y el certificado de nacimiento a la mano.</li>
+</ul>
+</div>
+</div>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert" style="border: none; border-left: 4px solid #0066cc; border-radius: 10px;">
+<i class="bi bi-check-circle-fill"></i> <strong>¡Éxito!</strong> {{ messages[0] }}
+<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{% endif %}
+{% endwith %}
+
+<form method="POST" action="/guardar" id="matriculaForm">
+<div class="row mb-4">
+<div class="col-12">
+<div class="card border-0 shadow-lg" style="border-radius: 15px; overflow: hidden;">
+<div class="card-header" style="background: linear-gradient(135deg, #0066cc 0%, #7db7ff 100%); color: white; border: none; padding: 1.5rem;">
+<div style="display: flex; align-items: center; gap: 10px;">
+<i class="bi bi-calendar-event" style="font-size: 1.5rem;"></i>
+<h5 style="margin: 0; font-weight: 600;">Año Escolar y Detalles SIGE</h5>
+</div>
+</div>
+<div class="card-body p-4">
+<div class="row g-3">
+<div class="col-md-3">
+<div class="form-floating">
+<input class="form-control form-control-lg" style="border-radius: 10px; border: 2px solid #e9ecef;" type="number" name="ano_escolar" placeholder="Año Escolar" id="ano_escolar" value="2025" required>
+<label for="ano_escolar"><i class="bi bi-calendar"></i> Año Escolar</label>
+</div>
+</div>
+<div class="col-md-3">
+<div class="form-floating">
+<input class="form-control form-control-lg" style="border-radius: 10px; border: 2px solid #e9ecef;" type="text" name="grado" placeholder="Grado" id="grado" required>
+<label for="grado"><i class="bi bi-mortarboard"></i> Grado</label>
+</div>
+</div>
+<div class="col-md-3">
+<div class="form-floating">
+<input class="form-control form-control-lg" style="border-radius: 10px; border: 2px solid #e9ecef;" type="text" name="seccion" placeholder="Sección" id="seccion">
+<label for="seccion"><i class="bi bi-layout-text-window-reverse"></i> Sección</label>
+</div>
+</div>
+<div class="col-md-3">
+<div class="form-floating">
+<input class="form-control form-control-lg" style="border-radius: 10px; border: 2px solid #e9ecef;" type="text" name="jornada" id="jornada" value="Completa" readonly>
+<label for="jornada"><i class="bi bi-clock-history"></i> Jornada</label>
+</div>
+</div>
+<div class="col-md-6">
+<div class="form-floating">
+<select class="form-select form-select-lg" style="border-radius: 10px; border: 2px solid #e9ecef;" name="tipo_matricula" id="tipo_matricula">
+<option value="Nueva">Nueva</option>
+<option value="Reingreso">Reingreso</option>
+<option value="Traspaso">Traspaso</option>
+<option value="Continuidad">Continuidad</option>
+</select>
+<label for="tipo_matricula"><i class="bi bi-file-earmark-text"></i> Tipo de Matrícula</label>
+</div>
+</div>
+<div class="col-md-6">
+<div class="form-floating">
+<select class="form-select form-select-lg" style="border-radius: 10px; border: 2px solid #e9ecef;" name="estado_matricula" id="estado_matricula">
+<option value="Matriculado" selected>Matriculado</option>
+<option value="Pendiente">Pendiente</option>
+<option value="Retirado">Retirado</option>
+<option value="Reingreso">Reingreso</option>
+</select>
+<label for="estado_matricula"><i class="bi bi-card-checklist"></i> Estado Matrícula</label>
+</div>
+</div>
+<div class="col-md-6">
+<div class="form-floating">
+<input class="form-control form-control-lg" style="border-radius: 10px; border: 2px solid #e9ecef;" type="date" name="fecha_matricula" placeholder="Fecha Matrícula" id="fecha_matricula" value="{{ fecha_matricula }}" readonly>
+<label for="fecha_matricula"><i class="bi bi-calendar-event"></i> Fecha Matrícula</label>
+</div>
+</div>
+<div class="col-md-6">
+<div class="form-floating">
+<input class="form-control form-control-lg" style="border-radius: 10px; border: 2px solid #e9ecef;" type="text" name="establecimiento" id="establecimiento" value="{{ establecimiento }}" readonly>
+<label for="establecimiento"><i class="bi bi-building"></i> Establecimiento</label>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row g-3 mt-3">
+<div class="col-md-4">
+<div class="form-floating">
+<input class="form-control form-control-lg" style="border-radius: 10px; border: 2px solid #e9ecef;" type="text" name="codigo_utp" id="codigo_utp" value="{{ codigo_utp }}" readonly>
+<label for="codigo_utp"><i class="bi bi-hash"></i> Código UTP</label>
+</div>
+</div>
+<div class="col-md-4">
+<div class="form-floating">
+<input class="form-control form-control-lg" style="border-radius: 10px; border: 2px solid #e9ecef;" type="text" name="sector" id="sector" placeholder="Sector">
+<label for="sector"><i class="bi bi-geo-alt"></i> Sector</label>
+</div>
+</div>
+<div class="col-md-4 d-flex align-items-end">
+<div class="w-100 p-3 rounded-3" style="background: rgba(0, 102, 204, 0.1); border: 1px solid rgba(0, 102, 204, 0.15); color: #003366;">
+<i class="bi bi-info-circle-fill"></i> El liceo trabaja en jornada completa. La matrícula se registrará automáticamente como completa.
+</div>
+<input type="hidden" name="jornada_completa" value="Sí">
+</div>
+</div>
+</div>
+
+<div class="row g-4">
+<div class="col-12">
+<div class="card border-0 shadow-lg" style="border-radius: 15px; overflow: hidden;">
+<div class="card-header" style="background: linear-gradient(135deg, #00538a 0%, #3f8fd1 100%); color: white; border: none; padding: 1.5rem;">
+<div style="display: flex; align-items: center; gap: 10px;">
+<i class="bi bi-check2-square" style="font-size: 1.5rem;"></i>
+<h5 style="margin: 0; font-weight: 600;">Requisitos SIGE</h5>
+</div>
+</div>
+<div class="card-body p-4">
+<div class="row g-3">
+<div class="col-md-4">
+<div class="form-floating">
+<input class="form-control form-control-lg" style="border-radius: 10px; border: 2px solid #e9ecef;" type="text" name="sae_asignacion" id="sae_asignacion" placeholder="Asignación SAE" required>
+<label for="sae_asignacion"><i class="bi bi-badge-ad" ></i> Asignación SAE</label>
+</div>
+</div>
+<div class="col-md-4">
+<div class="form-floating">
+<select class="form-select form-select-lg" style="border-radius: 10px; border: 2px solid #e9ecef;" name="certificado_nacimiento" id="certificado_nacimiento" required>
+<option value="">Selecciona</option>
+<option value="Sí">Sí</option>
+<option value="No">No</option>
+</select>
+<label for="certificado_nacimiento"><i class="bi bi-file-earmark-medical"></i> Certificado de Nacimiento</label>
+</div>
+</div>
+<div class="col-md-4">
+<div class="form-floating">
+<input class="form-control form-control-lg" style="border-radius: 10px; border: 2px solid #e9ecef;" type="text" name="situacion_academica" id="situacion_academica" placeholder="Situación Académica" required>
+<label for="situacion_academica"><i class="bi bi-book"></i> Situación Académica</label>
+</div>
+</div>
+<div class="col-md-4">
+<div class="form-floating">
+<select class="form-select form-select-lg" style="border-radius: 10px; border: 2px solid #e9ecef;" name="apoderado_poder_simple" id="apoderado_poder_simple">
+<option value="No aplica" selected>No aplica</option>
+<option value="Sí">Sí</option>
+<option value="No">No</option>
+</select>
+<label for="apoderado_poder_simple"><i class="bi bi-file-earmark-text"></i> Poder Simple Apoderado</label>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="row g-4">
+<!-- Alumno Card -->
+<div class="col-lg-6">
+<div class="card border-0 shadow-lg h-100" style="border-radius: 15px; overflow: hidden;">
+<div class="card-header" style="background: linear-gradient(135deg, #003366 0%, #0066cc 100%); color: white; border: none; padding: 1.5rem;">
+<div style="display: flex; align-items: center; gap: 10px;">
+<i class="bi bi-person-badge-fill" style="font-size: 1.5rem;"></i>
+<h5 style="margin: 0; font-weight: 600;">Datos del Estudiante</h5>
+</div>
+</div>
+<div class="card-body p-4">
+<div class="row g-3">
+<div class="col-12">
+<div class="form-floating">
+<input class="form-control form-control-lg" style="border-radius: 10px; border: 2px solid #e9ecef;" type="text" name="alumno_nombre" placeholder="Nombre completo" id="alumno_nombre" required>
+<label for="alumno_nombre"><i class="bi bi-person"></i> Nombre Completo</label>
+</div>
+</div>
+<div class="col-md-6">
+<div class="form-floating">
+<input class="form-control form-control-lg" style="border-radius: 10px; border: 2px solid #e9ecef;" type="text" name="alumno_rut" placeholder="RUT / IPA / IPE" id="alumno_rut" required>
+<label for="alumno_rut"><i class="bi bi-card-text"></i> RUT / IPA / IPE</label>
+</div>
+</div>
+<div class="col-md-6">
+<div class="form-floating">
+<input class="form-control form-control-lg" style="border-radius: 10px; border: 2px solid #e9ecef;" type="tel" name="alumno_telefono" placeholder="Teléfono" id="alumno_telefono" required>
+<label for="alumno_telefono"><i class="bi bi-telephone"></i> Teléfono</label>
+</div>
+</div>
+<div class="col-md-6">
+<div class="form-floating">
+<input class="form-control form-control-lg" style="border-radius: 10px; border: 2px solid #e9ecef;" type="date" name="fecha_nacimiento" placeholder="Fecha de nacimiento" id="fecha_nacimiento" required>
+<label for="fecha_nacimiento"><i class="bi bi-calendar-event"></i> Fecha de Nacimiento</label>
+</div>
+</div>
+<div class="col-12">
+<div class="form-floating">
+<input class="form-control form-control-lg" style="border-radius: 10px; border: 2px solid #e9ecef;" type="text" name="alumno_direccion" placeholder="Dirección completa" id="alumno_direccion" required>
+<label for="alumno_direccion"><i class="bi bi-geo-alt"></i> Dirección Completa</label>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Apoderado Card -->
+<div class="col-lg-6">
+<div class="card border-0 shadow-lg h-100" style="border-radius: 15px; overflow: hidden;">
+<div class="card-header" style="background: linear-gradient(135deg, #0066cc 0%, #003366 100%); color: white; border: none; padding: 1.5rem;">
+<div style="display: flex; align-items: center; gap: 10px;">
+<i class="bi bi-person-check-fill" style="font-size: 1.5rem;"></i>
+<h5 style="margin: 0; font-weight: 600;">Datos del Apoderado</h5>
+</div>
+</div>
+<div class="card-body p-4">
+<div class="row g-3">
+<div class="col-12">
+<div class="form-floating">
+<input class="form-control form-control-lg" style="border-radius: 10px; border: 2px solid #e9ecef;" type="text" name="apoderado_nombre" placeholder="Nombre completo" id="apoderado_nombre" required>
+<label for="apoderado_nombre"><i class="bi bi-person"></i> Nombre Completo</label>
+</div>
+</div>
+<div class="col-md-6">
+<div class="form-floating">
+<input class="form-control form-control-lg" style="border-radius: 10px; border: 2px solid #e9ecef;" type="text" name="apoderado_rut" placeholder="RUT / IPA / IPE" id="apoderado_rut" required>
+<label for="apoderado_rut"><i class="bi bi-card-text"></i> RUT / IPA / IPE</label>
+</div>
+</div>
+<div class="col-md-6">
+<div class="form-floating">
+<input class="form-control form-control-lg" style="border-radius: 10px; border: 2px solid #e9ecef;" type="tel" name="apoderado_telefono" placeholder="Teléfono" id="apoderado_telefono" required>
+<label for="apoderado_telefono"><i class="bi bi-telephone"></i> Teléfono</label>
+</div>
+</div>
+<div class="col-md-6">
+<div class="form-floating">
+<input class="form-control form-control-lg" style="border-radius: 10px; border: 2px solid #e9ecef;" type="email" name="apoderado_email" placeholder="Email" id="apoderado_email" required>
+<label for="apoderado_email"><i class="bi bi-envelope"></i> Correo Electrónico</label>
+</div>
+</div>
+<div class="col-12">
+<div class="form-floating">
+<input class="form-control form-control-lg" style="border-radius: 10px; border: 2px solid #e9ecef;" type="text" name="apoderado_direccion" placeholder="Dirección completa" id="apoderado_direccion" required>
+<label for="apoderado_direccion"><i class="bi bi-geo-alt"></i> Dirección Completa</label>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Suplente Section (Optional) -->
+<div class="row mt-4">
+<div class="col-12">
+<div class="card border-0 shadow-sm" style="border-radius: 15px; border: 2px dashed #dee2e6;">
+<div class="card-header bg-light border-0" id="suplenteHeader" style="border-radius: 15px 15px 0 0;">
+<div style="display: flex; align-items: center; gap: 10px;">
+<i class="bi bi-person-plus" style="color: #6c757d;"></i>
+<h6 style="margin: 0; color: #6c757d; font-weight: 600;">Apoderado Suplente (Opcional)</h6>
+<small class="text-muted ms-auto">Haga clic para expandir</small>
+</div>
+</div>
+<div class="card-body p-4" id="suplenteSection" style="display: none;">
+<div class="row g-3">
+<div class="col-md-6">
+<div class="form-floating">
+<input class="form-control" style="border-radius: 10px;" type="text" name="suplente_nombre" id="suplente_nombre" placeholder="Nombre completo">
+<label for="suplente_nombre"><i class="bi bi-person"></i> Nombre Completo</label>
+</div>
+</div>
+<div class="col-md-6">
+<div class="form-floating">
+<input class="form-control" style="border-radius: 10px;" type="text" name="suplente_rut" id="suplente_rut" placeholder="RUT">
+<label for="suplente_rut"><i class="bi bi-card-text"></i> RUT</label>
+</div>
+</div>
+<div class="col-md-6">
+<div class="form-floating">
+<input class="form-control" style="border-radius: 10px;" type="tel" name="suplente_telefono" id="suplente_telefono" placeholder="Teléfono">
+<label for="suplente_telefono"><i class="bi bi-telephone"></i> Teléfono</label>
+</div>
+</div>
+<div class="col-md-6">
+<div class="form-floating">
+<input class="form-control" style="border-radius: 10px;" type="text" name="suplente_direccion" id="suplente_direccion" placeholder="Dirección">
+<label for="suplente_direccion"><i class="bi bi-geo-alt"></i> Dirección</label>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Action Buttons -->
+<div class="row mt-4">
+<div class="col-12">
+<div class="d-flex justify-content-between align-items-center">
+<div class="d-flex gap-3">
+<button type="button" class="btn btn-outline-secondary btn-lg px-4" onclick="limpiarFormulario()">
+<i class="bi bi-x-circle"></i> Limpiar
+</button>
+<button type="button" class="btn btn-outline-primary btn-lg px-4" onclick="validarFormulario()">
+<i class="bi bi-check-circle"></i> Validar Datos
+</button>
+</div>
+<div>
+<button type="submit" class="btn btn-success btn-lg px-5" style="border-radius: 12px; font-weight: 600; box-shadow: 0 4px 15px rgba(25, 135, 84, 0.3);">
+<i class="bi bi-check2-all"></i> Guardar Matrícula
+</button>
+</div>
+</div>
+</div>
+</div>
+</form>
+
+<style>
+.form-floating > label {
+    padding: 1rem 0.75rem;
+}
+
+.form-control:focus {
+    border-color: #003366;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1) !important;
+}
+
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+    .d-flex.justify-content-between {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .d-flex.gap-3 {
+        justify-content: center;
+    }
+}
+</style>
+
+<script>
+// Toggle suplente section
+document.getElementById('suplenteHeader').addEventListener('click', function() {
+    const section = document.getElementById('suplenteSection');
+    const icon = this.querySelector('small');
+    
+    if (section.style.display === 'none') {
+        section.style.display = 'block';
+        icon.textContent = 'Haga clic para contraer';
+        this.style.cursor = 'pointer';
+        this.style.backgroundColor = '#e9ecef';
+    } else {
+        section.style.display = 'none';
+        icon.textContent = 'Haga clic para expandir';
+        this.style.backgroundColor = '#f8f9fa';
+    }
+});
+
+// Form validation
+function validarIdentificadorSige(value) {
+    const cleaned = value.replace(/\.|\s/g, '').toUpperCase();
+    const rutRegex = /^\d{7,8}-[0-9K]$/;
+    const ipaIpeRegex = /^(IPA|IPE)\d{4,10}$/;
+    return rutRegex.test(cleaned) || ipaIpeRegex.test(cleaned);
+}
+
+function validarFormulario() {
+    const alumnoRut = document.getElementById('alumno_rut').value;
+    const apoderadoRut = document.getElementById('apoderado_rut').value;
+    const saeAsignacion = document.getElementById('sae_asignacion').value.trim();
+    const certificadoNacimiento = document.getElementById('certificado_nacimiento').value;
+    const situacionAcademica = document.getElementById('situacion_academica').value.trim();
+    
+    let errores = [];
+    
+    if (!validarIdentificadorSige(alumnoRut)) {
+        errores.push('Identificador del alumno no es válido (RUT o IPA/IPE)');
+    }
+    
+    if (!validarIdentificadorSige(apoderadoRut)) {
+        errores.push('Identificador del apoderado no es válido (RUT o IPA/IPE)');
+    }
+
+    if (!saeAsignacion) {
+        errores.push('La asignación SAE es obligatoria para matrícula nueva');
+    }
+
+    if (!certificadoNacimiento) {
+        errores.push('Debes confirmar el certificado de nacimiento');
+    }
+
+    if (!situacionAcademica) {
+        errores.push('La situación académica del estudiante es obligatoria');
+    }
+
+    const apoderadoEmail = document.getElementById('apoderado_email').value;
+    const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+    if (!emailRegex.test(apoderadoEmail)) {
+        errores.push('Correo del apoderado no es válido');
+    }
+    
+    if (errores.length > 0) {
+        alert('Errores encontrados:\n' + errores.join('\n'));
+    } else {
+        alert('✅ Todos los datos son válidos según requisitos SIGE');
+    }
+}
+
+function limpiarFormulario() {
+    if (confirm('¿Está seguro de que desea limpiar todos los campos?')) {
+        document.getElementById('matriculaForm').reset();
+    }
+}
+</script>
+{% endblock %}

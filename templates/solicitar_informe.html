@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 2rem;">
+<i class="bi bi-file-earmark-text" style="font-size: 2rem; color: #003366;"></i>
+<h2 style="margin: 0;">Solicitar Informe de Alumno Regular</h2>
+</div>
+
+<div class="row justify-content-center">
+<div class="col-md-8">
+<div class="card border-0 shadow-lg" style="border-radius: 15px;">
+<div class="card-header" style="background: linear-gradient(135deg, #003366 0%, #0066cc 100%); color: white; border: none; padding: 1.5rem; border-radius: 15px 15px 0 0;">
+<h5 style="margin: 0; font-weight: 600;"><i class="bi bi-plus-circle"></i> Nueva Solicitud de Informe</h5>
+</div>
+<div class="card-body p-4">
+<form method="POST">
+<div class="mb-3">
+<label class="form-label"><i class="bi bi-person"></i> Seleccionar Alumno</label>
+<select class="form-select" name="alumno_rut" required style="border-radius: 10px;">
+<option value="">-- Selecciona un alumno --</option>
+{% for alumno in alumnos %}
+<option value="{{ alumno[0] }}">{{ alumno[1] }} ({{ alumno[0] }})</option>
+{% endfor %}
+</select>
+</div>
+
+<div class="mb-3">
+<label class="form-label"><i class="bi bi-filetype-doc"></i> Tipo de Informe</label>
+<select class="form-select" name="tipo_informe" required style="border-radius: 10px;">
+<option value="">-- Selecciona el tipo de informe --</option>
+<option value="certificado_regular">Certificado de Alumno Regular</option>
+<option value="informe_notas">Informe de Notas y Rendimiento</option>
+<option value="certificado_conducta">Certificado de Buena Conducta</option>
+<option value="informe_asistencia">Informe de Asistencia</option>
+<option value="otro">Otro (especificar en descripción)</option>
+</select>
+</div>
+
+<div class="mb-3">
+<label class="form-label"><i class="bi bi-textarea"></i> Descripción/Comentarios Adicionales</label>
+<textarea class="form-control" name="descripcion" rows="3" placeholder="Agrega cualquier información adicional que consideres importante..." style="border-radius: 10px;"></textarea>
+</div>
+
+<div class="alert alert-info" role="alert">
+<i class="bi bi-info-circle"></i> <strong>Nota:</strong> Esta solicitud será enviada al administrativo para su aprobación. Una vez aprobado, el informe será preparado e impreso para entrega física.
+</div>
+
+<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+<button type="submit" class="btn btn-success btn-lg" style="border-radius: 10px;">
+<i class="bi bi-send"></i> Enviar Solicitud
+</button>
+<a href="/dashboard" class="btn btn-outline-secondary btn-lg" style="border-radius: 10px;">
+<i class="bi bi-arrow-left"></i> Cancelar
+</a>
+</div>
+</form>
+</div>
+</div>
+</div>
+</div>
+
+<style>
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+}
+.card {
+    transition: all 0.3s ease;
+}
+</style>
+{% endblock %}

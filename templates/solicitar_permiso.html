@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 2rem;">
+<i class="bi bi-shield-plus" style="font-size: 2rem; color: #003366;"></i>
+<h2 style="margin: 0;">Solicitar Permiso Especial</h2>
+</div>
+
+<div class="row justify-content-center">
+<div class="col-md-8">
+<div class="card border-0 shadow-lg" style="border-radius: 15px;">
+<div class="card-header" style="background: linear-gradient(135deg, #003366 0%, #0066cc 100%); color: white; border: none; padding: 1.5rem; border-radius: 15px 15px 0 0;">
+<h5 style="margin: 0; font-weight: 600;"><i class="bi bi-envelope-plus"></i> Nueva Solicitud de Permiso</h5>
+</div>
+<div class="card-body p-4">
+<form method="POST">
+<div class="mb-3">
+<label class="form-label"><i class="bi bi-key"></i> Tipo de Permiso</label>
+<select class="form-select" name="permiso" required style="border-radius: 10px;">
+<option value="">-- Selecciona el permiso --</option>
+<option value="crear_usuario">Crear Usuarios</option>
+<option value="eliminar_matricula">Eliminar Matrículas</option>
+<option value="editar_usuarios">Editar Usuarios</option>
+<option value="modificar_roles">Modificar Roles de Usuarios</option>
+<option value="descargar_reportes">Descargar Reportes Avanzados</option>
+<option value="acceso_configuracion">Acceso a Configuración del Sistema</option>
+<option value="otro">Otro (especificar en descripción)</option>
+</select>
+</div>
+
+<div class="mb-3">
+<label class="form-label"><i class="bi bi-textarea"></i> Descripción de la Solicitud</label>
+<textarea class="form-control" name="descripcion" rows="4" placeholder="Explica por qué necesitas este permiso y cómo lo utilizarás..." required style="border-radius: 10px;"></textarea>
+</div>
+
+<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+<button type="submit" class="btn btn-primary btn-lg" style="border-radius: 10px;">
+<i class="bi bi-send"></i> Enviar Solicitud
+</button>
+<a href="/dashboard" class="btn btn-outline-secondary btn-lg" style="border-radius: 10px;">
+<i class="bi bi-arrow-left"></i> Cancelar
+</a>
+</div>
+</form>
+</div>
+</div>
+</div>
+</div>
+
+<style>
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1) !important;
+    transition: all 0.3s ease;
+}
+</style>
+{% endblock %}

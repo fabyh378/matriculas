@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 2rem;">
+<i class="bi bi-person-lines-fill" style="font-size: 2rem; color: #003366;"></i>
+<h2 style="margin: 0;">Asistencia de {{ alumno[1] }}</h2>
+</div>
+
+<!-- Información del Alumno -->
+<div class="card mb-4" style="border: none; border-left: 4px solid #003366;">
+<div class="card-header" style="background: #f8f9fa; border: none;">
+<h5 style="margin: 0; color: #003366;">
+<i class="bi bi-person-badge"></i> Información del Alumno
+</h5>
+</div>
+<div class="card-body">
+<div class="row">
+<div class="col-md-6">
+<p><strong>Nombre:</strong> {{ alumno[1] }}</p>
+<p><strong>RUT:</strong> {{ alumno[2] }}</p>
+<p><strong>Dirección:</strong> {{ alumno[3] }}</p>
+<p><strong>Teléfono:</strong> {{ alumno[4] }}</p>
+</div>
+<div class="col-md-6">
+<p><strong>Apoderado:</strong> {{ alumno[5] }}</p>
+<p><strong>RUT Apoderado:</strong> {{ alumno[6] }}</p>
+<p><strong>Teléfono Apoderado:</strong> {{ alumno[7] }}</p>
+<p><strong>Dirección Apoderado:</strong> {{ alumno[8] }}</p>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Estadísticas de Asistencia -->
+<div class="row mb-4">
+<div class="col-md-3 mb-3">
+<div class="card border-0 shadow-sm h-100" style="border-left: 5px solid #0066cc;">
+<div class="card-body text-center">
+<div style="font-size: 2rem; color: #0066cc; font-weight: bold;">{{ presentes }}</div>
+<small class="text-success">Presentes</small>
+</div>
+</div>
+</div>
+
+<div class="col-md-3 mb-3">
+<div class="card border-0 shadow-sm h-100" style="border-left: 5px solid #cc0000;">
+<div class="card-body text-center">
+<div style="font-size: 2rem; color: #cc0000; font-weight: bold;">{{ ausentes }}</div>
+<small class="text-danger">Ausentes</small>
+</div>
+</div>
+</div>
+
+<div class="col-md-3 mb-3">
+<div class="card border-0 shadow-sm h-100" style="border-left: 5px solid #0066cc;">
+<div class="card-body text-center">
+<div style="font-size: 2rem; color: #0066cc; font-weight: bold;">{{ total }}</div>
+<small class="text-info">Total Días</small>
+</div>
+</div>
+</div>
+
+<div class="col-md-3 mb-3">
+<div class="card border-0 shadow-sm h-100" style="border-left: 5px solid #0066cc;">
+<div class="card-body text-center">
+<div style="font-size: 2rem; color: #0066cc; font-weight: bold;">{{ porcentaje }}%</div>
+<small class="text-primary">Asistencia</small>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Historial de Asistencia -->
+<div class="card" style="border: none; border-top: 4px solid #003366;">
+<div class="card-header" style="background: #f8f9fa; border: none;">
+<h5 style="margin: 0; color: #003366;">
+<i class="bi bi-calendar-event"></i> Historial de Asistencia
+</h5>
+</div>
+<div class="card-body p-0">
+{% if registros %}
+<div class="table-responsive">
+<table class="table table-hover mb-0">
+<thead>
+<tr>
+<th><i class="bi bi-calendar-event"></i> Fecha</th>
+<th><i class="bi bi-check-square"></i> Estado</th>
+<th style="width: 100px; text-align: center;"><i class="bi bi-info-circle"></i> Detalle</th>
+</tr>
+</thead>
+<tbody>
+{% for registro in registros %}
+<tr>
+<td>
+<span style="display: inline-flex; align-items: center; gap: 5px;">
+<i class="bi bi-calendar3"></i> {{ registro[3] }}
+</span>
+</td>
+<td>
+{% if registro[4] == 1 %}
+<span class="badge bg-success" style="padding: 8px 15px;">
+<i class="bi bi-check-circle"></i> Presente
+</span>
+{% else %}
+<span class="badge bg-danger" style="padding: 8px 15px;">
+<i class="bi bi-x-circle"></i> Ausente
+</span>
+{% endif %}
+</td>
+<td style="text-align: center;">
+{% if session.get('rol') != 'apoderado' %}
+<a href="/eliminar_asistencia/{{ registro[0] }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Eliminar este registro?')" title="Eliminar">
+<i class="bi bi-trash"></i>
+</a>
+{% else %}
+<span class="text-muted">-</span>
+{% endif %}
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+{% else %}
+<div class="text-center py-5">
+<i class="bi bi-calendar-x" style="font-size: 2.5rem; color: #ccc;"></i>
+<p class="text-muted mt-3">No hay registros de asistencia para este alumno</p>
+</div>
+{% endif %}
+</div>
+</div>
+
+<!-- Botón de regreso -->
+<div class="mt-4">
+<a href="/lista" class="btn btn-outline-secondary">
+<i class="bi bi-arrow-left"></i> Volver a la lista
+</a>
+</div>
+{% endblock %}

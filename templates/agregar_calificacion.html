@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Calificación - Liceo Claudina Urrutia de Lavín</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">Liceo Claudina Urrutia de Lavín</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/logout">Cerrar Sesión</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h2>Agregar Calificación</h2>
+        
+        <form method="POST">
+            <div class="mb-3">
+                <label for="alumno_rut" class="form-label">Alumno</label>
+                <select class="form-select" id="alumno_rut" name="alumno_rut" required>
+                    <option value="">Seleccionar alumno</option>
+                    {% for alumno in alumnos %}
+                    <option value="{{ alumno[0] }}">{{ alumno[1] }} ({{ alumno[0] }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="mb-3">
+                <label for="nota" class="form-label">Nota (1.0 - 7.0)</label>
+                <input type="number" step="0.1" min="1.0" max="7.0" class="form-control" id="nota" name="nota" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="comentario" class="form-label">Comentario</label>
+                <textarea class="form-control" id="comentario" name="comentario" rows="3"></textarea>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Guardar Calificación</button>
+            <a href="/calificaciones" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

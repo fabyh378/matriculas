@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block title %}Gestionar Usuarios{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-lg" style="border-radius: 15px;">
+                <div class="card-header" style="background: linear-gradient(135deg, #003366 0%, #0066cc 100%); color: white; border: none; padding: 2rem; border-radius: 15px 15px 0 0;">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="mb-0"><i class="bi bi-people-gear"></i> Gestión de Usuarios</h4>
+                            <p class="mb-0 opacity-75">Administra todos los usuarios del sistema</p>
+                        </div>
+                        <a href="/dashboard" class="btn btn-light" style="border-radius: 10px;">
+                            <i class="bi bi-arrow-left"></i> Volver al Dashboard
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card-body p-4">
+                    {% if mensaje %}
+                    <div class="alert alert-{{ 'success' if 'éxito' in mensaje.lower() else 'danger' }} alert-dismissible fade show" role="alert">
+                        {{ mensaje }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    {% endif %}
+
+                    <!-- Información del sistema -->
+                    <div class="alert alert-info" role="alert">
+                        <i class="bi bi-info-circle"></i> <strong>Información:</strong> Aquí puedes gestionar todos los usuarios del sistema.
+                        Total de usuarios registrados: <strong>{{ usuarios|length }}</strong>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+                                <tr>
+                                    <th class="border-0 py-3">ID</th>
+                                    <th class="border-0 py-3">Usuario</th>
+                                    <th class="border-0 py-3">Nombre</th>
+                                    <th class="border-0 py-3">Rol</th>
+                                    <th class="border-0 py-3">Asignatura</th>
+                                    <th class="border-0 py-3">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for usuario in usuarios %}
+                                <tr style="border-bottom: 1px solid #f1f3f4;">
+                                    <td class="py-3">{{ usuario[0] }}</td>
+                                    <td class="py-3">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div style="width: 35px; height: 35px; border-radius: 50%; background: linear-gradient(135deg, #0066cc 0%, #7db7ff 100%); display: flex; align-items: center; justify-content: center;">
+                                                <i class="bi bi-person-circle text-white" style="font-size: 0.9rem;"></i>
+                                            </div>
+                                            {{ usuario[1] }}
+                                        </div>
+                                    </td>
+                                    <td class="py-3">{{ usuario[2] }}</td>
+                                    <td class="py-3">
+                                        <span class="badge" style="background: {% if usuario[3] == 'admin' %}linear-gradient(135deg, #cc0000 0%, #003366 100%){% elif usuario[3] == 'docente' %}linear-gradient(135deg, #0066cc 0%, #7db7ff 100%){% else %}linear-gradient(135deg, #7db7ff 0%, #cfe5ff 100%){% endif %}; color: white; padding: 0.5rem 1rem; border-radius: 20px;">
+                                            {% if usuario[3] == 'admin' %}
+                                                <i class="bi bi-shield-check"></i> Admin
+                                            {% elif usuario[3] == 'docente' %}
+                                                <i class="bi bi-mortarboard"></i> Docente
+                                            {% else %}
+                                                <i class="bi bi-person-gear"></i> Administrativo
+                                            {% endif %}
+                                        </span>
+                                    </td>
+                                    <td class="py-3">{{ usuario[4] if usuario[4] else 'N/A' }}</td>
+                                    <td class="py-3">
+                                        <div class="btn-group" role="group">
+                                            <a href="/editar_usuario/{{ usuario[0] }}" class="btn btn-sm" style="background: linear-gradient(135deg, #003366 0%, #0066cc 100%); color: white; border: none; border-radius: 8px 0 0 8px;">
+                                                <i class="bi bi-pencil"></i> Editar
+                                            </a>
+                                            {% if usuario[3] != 'admin' %}
+                                            <button type="button" class="btn btn-sm btn-danger" style="border-radius: 0 8px 8px 0;" onclick="confirmarEliminar({{ usuario[0] }}, '{{ usuario[1] }}')">
+                                                <i class="bi bi-trash"></i> Eliminar
+                                            </button>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {% if not usuarios %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-people" style="font-size: 3rem; color: #6c757d;"></i>
+                        <h5 class="mt-3 text-muted">No hay usuarios registrados</h5>
+                        <a href="/crear_usuario" class="btn btn-primary mt-3" style="border-radius: 10px; background: linear-gradient(135deg, #003366 0%, #0066cc 100%); border: none;">
+                            <i class="bi bi-person-plus"></i> Crear Primer Usuario
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de confirmación para eliminar -->
+<div class="modal fade" id="confirmarEliminarModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content" style="border-radius: 15px;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #cc0000 0%, #003366 100%); color: white; border: none; border-radius: 15px 15px 0 0;">
+                <h5 class="modal-title"><i class="bi bi-exclamation-triangle"></i> Confirmar Eliminación</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que deseas eliminar al usuario <strong id="usuarioEliminar"></strong>?</p>
+                <p class="text-danger mb-0">Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 10px;">Cancelar</button>
+                <a id="btnEliminarConfirmado" href="#" class="btn btn-danger" style="border-radius: 10px;">
+                    <i class="bi bi-trash"></i> Eliminar
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function confirmarEliminar(id, nombre) {
+    document.getElementById('usuarioEliminar').textContent = nombre;
+    document.getElementById('btnEliminarConfirmado').href = '/eliminar_usuario/' + id;
+    new bootstrap.Modal(document.getElementById('confirmarEliminarModal')).show();
+}
+</script>
+
+<style>
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
+    transition: all 0.3s ease;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f8f9fa;
+    transform: scale(1.01);
+    transition: all 0.2s ease;
+}
+
+.btn-group .btn {
+    border-radius: 0;
+}
+
+.btn-group .btn:first-child {
+    border-radius: 8px 0 0 8px;
+}
+
+.btn-group .btn:last-child {
+    border-radius: 0 8px 8px 0;
+}
+</style>
+{% endblock %}

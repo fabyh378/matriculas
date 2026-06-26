@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 2rem;">
+<i class="bi bi-shield-check" style="font-size: 2rem; color: #003366;"></i>
+<h2 style="margin: 0;">Gestión de Solicitudes de Permisos</h2>
+</div>
+
+{% if solicitudes %}
+<div class="card border-0 shadow-lg" style="border-radius: 15px;">
+<div class="card-header" style="background: linear-gradient(135deg, #003366 0%, #0066cc 100%); color: white; border: none; padding: 1.5rem; border-radius: 15px 15px 0 0;">
+<h5 style="margin: 0; font-weight: 600;"><i class="bi bi-list-check"></i> Solicitudes Pendientes y Procesadas</h5>
+</div>
+<div class="card-body p-0">
+<div class="table-responsive">
+<table class="table table-hover mb-0">
+<thead style="background: #f8f9fa;">
+<tr>
+<th><i class="bi bi-person"></i> Solicitante</th>
+<th><i class="bi bi-key"></i> Permiso</th>
+<th><i class="bi bi-textarea"></i> Descripción</th>
+<th><i class="bi bi-calendar"></i> Fecha</th>
+<th><i class="bi bi-flag"></i> Estado</th>
+<th style="width: 200px; text-align: center;"><i class="bi bi-tools"></i> Acciones</th>
+</tr>
+</thead>
+<tbody>
+{% for solicitud in solicitudes %}
+<tr>
+<td>
+<strong>{{ solicitud[6] }}</strong><br>
+<small class="text-muted">{{ solicitud[5] }}</small>
+</td>
+<td>
+<span class="badge bg-primary">{{ solicitud[1] }}</span>
+</td>
+<td>{{ solicitud[2] }}</td>
+<td>{{ solicitud[4] }}</td>
+<td>
+{% if solicitud[3] == 'pendiente' %}
+<span class="badge bg-warning">Pendiente</span>
+{% elif solicitud[3] == 'aprobado' %}
+<span class="badge bg-success">Aprobado</span>
+{% else %}
+<span class="badge bg-danger">Rechazado</span>
+{% endif %}
+</td>
+<td style="text-align: center;">
+{% if solicitud[3] == 'pendiente' %}
+<a href="/admin/aprobar_permiso/{{ solicitud[0] }}" class="btn btn-sm btn-success" title="Aprobar">
+<i class="bi bi-check-circle"></i>
+</a>
+<a href="/admin/rechazar_permiso/{{ solicitud[0] }}" class="btn btn-sm btn-danger ms-1" title="Rechazar">
+<i class="bi bi-x-circle"></i>
+</a>
+{% endif %}
+<a href="/chat/{{ solicitud[0] }}" class="btn btn-sm btn-info ms-1" title="Chat">
+<i class="bi bi-chat-dots"></i>
+</a>
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+</div>
+</div>
+{% else %}
+<div class="alert alert-info" role="alert">
+<i class="bi bi-info-circle"></i> No hay solicitudes de permisos en este momento.
+</div>
+{% endif %}
+
+<style>
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1) !important;
+    transition: all 0.3s ease;
+}
+</style>
+{% endblock %}

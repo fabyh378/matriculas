@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Usuario{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-lg" style="border-radius: 15px;">
+                <div class="card-header" style="background: linear-gradient(135deg, #003366 0%, #0066cc 100%); color: white; border: none; padding: 2rem; border-radius: 15px 15px 0 0;">
+                    <div class="d-flex align-items-center gap-3">
+                        <div style="width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-person-gear" style="font-size: 2rem;"></i>
+                        </div>
+                        <div>
+                            <h4 class="mb-0">Editar Usuario</h4>
+                            <p class="mb-0 opacity-75">Modificar información del usuario</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body p-4">
+                    {% if mensaje %}
+                    <div class="alert alert-{{ 'success' if 'éxito' in mensaje.lower() else 'danger' }} alert-dismissible fade show" role="alert">
+                        {{ mensaje }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    {% endif %}
+
+                    <form method="POST" action="/editar_usuario/{{ usuario[0] }}">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="usuario" class="form-label fw-bold">Nombre de Usuario</label>
+                                <input type="text" class="form-control" id="usuario" name="usuario" value="{{ usuario[1] }}" required style="border-radius: 10px; border: 2px solid #e9ecef;">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="rol" class="form-label fw-bold">Rol</label>
+                                <select class="form-select" id="rol" name="rol" required style="border-radius: 10px; border: 2px solid #e9ecef;">
+                                    <option value="admin" {{ 'selected' if usuario[3] == 'admin' else '' }}>Administrador</option>
+                                    <option value="docente" {{ 'selected' if usuario[3] == 'docente' else '' }}>Docente</option>
+                                    <option value="administrativo" {{ 'selected' if usuario[3] == 'administrativo' else '' }}>Administrativo</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="asignatura" class="form-label fw-bold">Asignatura</label>
+                                <input type="text" class="form-control" id="asignatura" name="asignatura" value="{{ usuario[4] if usuario[4] else '' }}" style="border-radius: 10px; border: 2px solid #e9ecef;">
+                                <small class="text-muted">Solo aplica para docentes</small>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="password_nueva" class="form-label fw-bold">Nueva Contraseña (opcional)</label>
+                                <input type="password" class="form-control" id="password_nueva" name="password_nueva" style="border-radius: 10px; border: 2px solid #e9ecef;">
+                                <small class="text-muted">Deja vacío para mantener la contraseña actual</small>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-3 mt-4">
+                            <button type="submit" class="btn btn-primary px-4 py-2" style="border-radius: 10px; background: linear-gradient(135deg, #003366 0%, #0066cc 100%); border: none;">
+                                <i class="bi bi-check-circle"></i> Guardar Cambios
+                            </button>
+                            <a href="/gestionar_usuarios" class="btn btn-secondary px-4 py-2" style="border-radius: 10px;">
+                                <i class="bi bi-arrow-left"></i> Volver a Gestión de Usuarios
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Mostrar/ocultar campo de asignatura basado en el rol seleccionado
+document.getElementById('rol').addEventListener('change', function() {
+    const asignaturaField = document.getElementById('asignatura').closest('.col-md-6');
+    if (this.value === 'docente') {
+        asignaturaField.style.display = 'block';
+    } else {
+        asignaturaField.style.display = 'none';
+        document.getElementById('asignatura').value = '';
+    }
+});
+
+// Ejecutar al cargar la página
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('rol').dispatchEvent(new Event('change'));
+});
+</script>
+
+<style>
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #003366;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+</style>
+{% endblock %}
